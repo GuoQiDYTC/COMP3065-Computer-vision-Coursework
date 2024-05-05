@@ -4,11 +4,11 @@ import logging
 import functools
 import time
 
-# 设置日志
+# set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def time_it(func):
-    """装饰器：计算并打印函数的执行时间"""
+    """Wrapper: Calculates and prints the execution time of a function"""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -20,7 +20,7 @@ def time_it(func):
     return wrapper
 
 def read_video(video_path):
-    """读取视频并返回帧"""
+    """Reads the video and returns frames"""
     cap = cv2.VideoCapture(video_path)
     frames = []
     while True:
@@ -33,7 +33,7 @@ def read_video(video_path):
 
 
 def sharpen_image(image):
-    """使用锐化核增强图像细节"""
+    """Sharpening kernel is used to enhance image details"""
     # 定义一个锐化核
     sharpening_kernel = np.array([[-1, -1, -1],
                                   [-1,  9, -1],
@@ -44,7 +44,7 @@ def sharpen_image(image):
 
 @time_it
 def sharpen_frame(frames):
-    """处理单帧图像，可选是否锐化"""
+    """sharpens all the frames in the list of frames"""
     for frame in frames:
         frame = sharpen_image(frame)
     return frames
@@ -52,6 +52,7 @@ def sharpen_frame(frames):
 
 @time_it
 def filter_motion_frames(frames, motion_threshold=0.5):
+    """Removes duplicate frames based on the average magnitude of optical flow between frames"""
     filtered_frames = [frames[0]]  # Always include the first frame
     prev_gray = cv2.cvtColor(frames[0], cv2.COLOR_BGR2GRAY)
 
@@ -74,13 +75,13 @@ def filter_motion_frames(frames, motion_threshold=0.5):
 
 @time_it
 def select_key_frames(frames, skip=5):
-    """通过skip frame方式获取关键帧"""
+    """Select key frames by skipping frames"""
     key_frames = frames[::skip]
     return key_frames
 
 @time_it
 def detect_and_match_features(frames):
-    """检测特征点并进行匹配"""
+    """Detects features and matches them between frames"""
     orb = cv2.ORB_create()
     keypoints_all = []
     descriptors_all = []
@@ -99,7 +100,7 @@ def detect_and_match_features(frames):
 
 @time_it
 def stitch(frames, keypoints_all, matches):
-    """拼接图像"""
+    """Stitches the images together"""
     stitcher = cv2.Stitcher_create()
     (status, stitched) = stitcher.stitch(frames)
 
