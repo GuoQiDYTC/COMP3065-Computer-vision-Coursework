@@ -34,11 +34,9 @@ def read_video(video_path):
 
 def sharpen_image(image):
     """Sharpening kernel is used to enhance image details"""
-    # 定义一个锐化核
     sharpening_kernel = np.array([[-1, -1, -1],
                                   [-1,  9, -1],
                                   [-1, -1, -1]])
-    # 应用锐化核
     sharpened_image = cv2.filter2D(image, -1, sharpening_kernel)
     return sharpened_image
 
